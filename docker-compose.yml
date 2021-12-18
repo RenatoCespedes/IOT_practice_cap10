@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+    node-red:
+      image: nodered/node-red:latest
+      ports:
+        - "1880:1880"
+    mosquitto:
+      image: eclipse-mosquitto:1.6
+      ports:
+        - "9001:9001"
+        - "1883:1883"
+    mysql:
+      image: mysql:latest
+      ports:
+        - "3306:3306"
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_DATABASE=database
+        - MYSQL_USER=user
+        - MYSQL_PASSWORD=password
+    phpmyadmin:
+      image: phpmyadmin/phpmyadmin:latest
+      ports:
+        - "8080:80"
+      environment:
+        - PMA_HOST=mysql
+        - PMA_USER=root
+        - PMA_PASSWORD=root
+      depends_on:
+        - mysql
+
+
+networks:
+  default:
+    external:
+      name: red_local1
