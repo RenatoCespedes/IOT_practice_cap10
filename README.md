@@ -34,5 +34,8 @@ Para la importación solo se hace click en el icono de opciones(esquina superior
 ## Integrantes
 
 - Céspedes Fuentes, Renato
+- Vicente Castro, Renzo
+- Torres Rodriguez Jaime
+- Hermoza Loayza, Miguel 
 
 
