@@ -1,0 +1,136 @@
+[
+    {
+        "id": "55f739f33aa0d9a2",
+        "type": "tab",
+        "label": "Enable and disable specific rule",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "46c3d25bd2b36c54",
+        "type": "http in",
+        "z": "55f739f33aa0d9a2",
+        "name": "",
+        "url": "/rules/enable/:id",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 120,
+        "wires": [
+            [
+                "83f28236a54eaab6"
+            ]
+        ]
+    },
+    {
+        "id": "8d23c37068308a18",
+        "type": "http in",
+        "z": "55f739f33aa0d9a2",
+        "name": "",
+        "url": "/rules/disable/:id",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 200,
+        "wires": [
+            [
+                "ac8c6f67f32e8c7a"
+            ]
+        ]
+    },
+    {
+        "id": "8fe798dcfcd61d62",
+        "type": "http response",
+        "z": "55f739f33aa0d9a2",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 930,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "83f28236a54eaab6",
+        "type": "function",
+        "z": "55f739f33aa0d9a2",
+        "name": "create query",
+        "func": "msg.action = \"enable\";\nmsg.topic = \"UPDATE ruleEngine\" +\n \" SET active=1\" +\n \" WHERE\" +\n \" id=\" + msg.req.params.id + \";\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 120,
+        "wires": [
+            [
+                "6586fd4021998c7e"
+            ]
+        ]
+    },
+    {
+        "id": "ac8c6f67f32e8c7a",
+        "type": "function",
+        "z": "55f739f33aa0d9a2",
+        "name": "create query",
+        "func": "msg.action = \"enable\";\nmsg.topic = \"UPDATE ruleEngine\" +\n \" SET active=0\" +\n \" WHERE\" +\n \" id=\" + msg.req.params.id + \";\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 200,
+        "wires": [
+            [
+                "6586fd4021998c7e"
+            ]
+        ]
+    },
+    {
+        "id": "6586fd4021998c7e",
+        "type": "mysql",
+        "z": "55f739f33aa0d9a2",
+        "mydb": "e3e24f894c07d7f9",
+        "name": "",
+        "x": 560,
+        "y": 160,
+        "wires": [
+            [
+                "5c60e2ed54bb3457"
+            ]
+        ]
+    },
+    {
+        "id": "5c60e2ed54bb3457",
+        "type": "function",
+        "z": "55f739f33aa0d9a2",
+        "name": "prepare response",
+        "func": "msg.action = \"enable\";\nmsg.topic = \"UPDATE ruleEngine\" +\n \" SET active=1\" +\n \" WHERE\" +\n \" id=\" + msg.req.params.id + \";\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 160,
+        "wires": [
+            [
+                "8fe798dcfcd61d62"
+            ]
+        ]
+    },
+    {
+        "id": "e3e24f894c07d7f9",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "iot_proyect_mysql_1",
+        "port": "3306",
+        "db": "tSeriesDB",
+        "tz": "",
+        "charset": "UTF8"
+    }
+]

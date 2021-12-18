@@ -1,0 +1,205 @@
+[
+    {
+        "id": "24f2662fef4b515f",
+        "type": "tab",
+        "label": "Flow Sequence ruleEngine",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "94a716c4ba0db32a",
+        "type": "mqtt in",
+        "z": "24f2662fef4b515f",
+        "name": "",
+        "topic": "time",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "c1e4fd583723331d",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 70,
+        "y": 220,
+        "wires": [
+            [
+                "f3c6d15b9c0ec1c2",
+                "15f0352f242e09f4"
+            ]
+        ]
+    },
+    {
+        "id": "f3c6d15b9c0ec1c2",
+        "type": "function",
+        "z": "24f2662fef4b515f",
+        "name": "search rules",
+        "func": "msg.topic = \"SELECT * FROM ruleEngine\" +\n \" WHERE\" +\n \" ('\" + msg.topic + \"' LIKE topicPattern)\" +\n \" AND\" +\n \" ('\" + msg.payload + \"' LIKE payloadPattern)\" +\n \" AND active=1\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 220,
+        "wires": [
+            [
+                "fd3b6fe54b391f28"
+            ]
+        ]
+    },
+    {
+        "id": "fd3b6fe54b391f28",
+        "type": "mysql",
+        "z": "24f2662fef4b515f",
+        "mydb": "e3e24f894c07d7f9",
+        "name": "",
+        "x": 460,
+        "y": 220,
+        "wires": [
+            [
+                "e9a549a149c9af1b"
+            ]
+        ]
+    },
+    {
+        "id": "16d58ee129e990fd",
+        "type": "debug",
+        "z": "24f2662fef4b515f",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 970,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "e9a549a149c9af1b",
+        "type": "function",
+        "z": "24f2662fef4b515f",
+        "name": "call WebHook",
+        "func": "if(msg.payload.length !== 0){\n    for(var i = 0; i < msg.payload.length; i++){\n        msg.method = msg.payload[i].method;\n        msg.url = msg.payload[i].webHook;\n        node.send([msg]);\n    }\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0cedde6c57a184f8",
+        "type": "http request",
+        "z": "24f2662fef4b515f",
+        "name": "",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://127.0.0.1:1880/test",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 830,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1f8ff9a6c139c45d",
+        "type": "debug",
+        "z": "24f2662fef4b515f",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "15f0352f242e09f4",
+        "type": "function",
+        "z": "24f2662fef4b515f",
+        "name": "create query",
+        "func": "// get microtime\nvar timestamp = new Date().getTime()/1000;\n// pad it with trailing zeroes\ntimestamp = timestamp.toString() + \"000\";\n// trim to exact length 10 + 1 + 3\ntimestamp = timestamp.substring(0, 14);\nvar strQuery = \"INSERT INTO thingData (topic, payload, timestamp, deleted) VALUES ('\" + escape(msg.topic) + \"','\" + escape(msg.payload) + \"','\" + timestamp + \"', 0);\";\nmsg.topic = strQuery;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 160,
+        "wires": [
+            [
+                "dc085ed0a1e2d778"
+            ]
+        ]
+    },
+    {
+        "id": "dc085ed0a1e2d778",
+        "type": "mysql",
+        "z": "24f2662fef4b515f",
+        "mydb": "e3e24f894c07d7f9",
+        "name": "",
+        "x": 460,
+        "y": 160,
+        "wires": [
+            [
+                "1f8ff9a6c139c45d"
+            ]
+        ]
+    },
+    {
+        "id": "c1e4fd583723331d",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "iot_proyect_mosquitto_1",
+        "port": "1883",
+        "clientid": "node-red",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "e3e24f894c07d7f9",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "iot_proyect_mysql_1",
+        "port": "3306",
+        "db": "tSeriesDB",
+        "tz": "",
+        "charset": "UTF8"
+    }
+]
